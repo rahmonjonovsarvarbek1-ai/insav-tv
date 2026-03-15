@@ -217,31 +217,42 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMovies();
 });
 
-// 3. Kinolarni ekranga chiqarish funksiyasi
+// Filmlarni chizish funksiyasi
 function renderMovies() {
-    const trendingGrid = document.getElementById('trendingGrid');
-    const allMoviesGrid = document.getElementById('allMoviesGrid');
+    const grid = document.getElementById('trendingGrid');
+    if (grid) {
+        grid.innerHTML = ''; // Yozuvni o'chiradi
+        const myMovies = [
+            {
+                title: "O'rgimchak odam",
+                thumb: "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_.jpg",
+                url: "https://www.w3schools.com/html/mov_bbb.mp4"
+            }
+        ];
 
-    // Gridlarni tozalash
-    if(trendingGrid) trendingGrid.innerHTML = '';
-    if(allMoviesGrid) allMoviesGrid.innerHTML = '';
-
-    movies.forEach((movie, index) => {
-        const movieHTML = `
-            <div class="movie-card" onclick="playMovie('${movie.url}')">
-                <img src="${movie.thumb}" alt="${movie.title}">
-                <div class="movie-info">
-                    <h4>${movie.title}</h4>
-                    <i class="fas fa-play-circle"></i>
-                </div>
-            </div>
-        `;
-        
-        // Ham asosiyga, ham kinolar bo'limiga qo'shamiz
-        if(trendingGrid) trendingGrid.innerHTML += movieHTML;
-        if(allMoviesGrid) allMoviesGrid.innerHTML += movieHTML;
-    });
+        myMovies.forEach(movie => {
+            grid.innerHTML += `
+                <div class="movie-card">
+                    <img src="${movie.thumb}" style="width:200px; border-radius:10px;">
+                    <h4 style="color:white;">${movie.title}</h4>
+                </div>`;
+        });
+    }
 }
+
+// Holatni kuzatish
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Agar foydalanuvchi kirgan bo'lsa
+        document.getElementById('loginPage')?.classList.add('hidden');
+        document.getElementById('mainApp')?.classList.remove('hidden');
+        renderMovies(); // Kinolarni shu yerda chiqaramiz
+    } else {
+        // Kirilmagan bo'lsa
+        document.getElementById('loginPage')?.classList.remove('hidden');
+        document.getElementById('mainApp')?.classList.add('hidden');
+    }
+});
 
 // 4. Yangi kino qo'shish funksiyasi (Studio qismi uchun)
 function addNewMovie() {
