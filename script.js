@@ -202,3 +202,108 @@ function toggleMenu() {
     }
 }
 
+
+// 1. Kinolar ma'lumotlar bazasi (Vaqtinchalik massiv)
+let movies = [
+    {
+        title: "O'rgimchak odam: Uyga yo'l yo'q",
+        thumb: "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_.jpg",
+        url: "https://www.w3schools.com/html/mov_bbb.mp4"
+    }
+];
+
+// 2. Sahifa yuklanganda kinolarni ko'rsatish
+document.addEventListener('DOMContentLoaded', () => {
+    renderMovies();
+});
+
+// 3. Kinolarni ekranga chiqarish funksiyasi
+function renderMovies() {
+    const trendingGrid = document.getElementById('trendingGrid');
+    const allMoviesGrid = document.getElementById('allMoviesGrid');
+
+    // Gridlarni tozalash
+    if(trendingGrid) trendingGrid.innerHTML = '';
+    if(allMoviesGrid) allMoviesGrid.innerHTML = '';
+
+    movies.forEach((movie, index) => {
+        const movieHTML = `
+            <div class="movie-card" onclick="playMovie('${movie.url}')">
+                <img src="${movie.thumb}" alt="${movie.title}">
+                <div class="movie-info">
+                    <h4>${movie.title}</h4>
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+        `;
+        
+        // Ham asosiyga, ham kinolar bo'limiga qo'shamiz
+        if(trendingGrid) trendingGrid.innerHTML += movieHTML;
+        if(allMoviesGrid) allMoviesGrid.innerHTML += movieHTML;
+    });
+}
+
+// 4. Yangi kino qo'shish funksiyasi (Studio qismi uchun)
+function addNewMovie() {
+    const title = document.getElementById('mTitle').value;
+    const thumb = document.getElementById('mThumb').value;
+    const url = document.getElementById('mURL').value;
+
+    if (title && thumb && url) {
+        // Yangi kinoni massivga qo'shish
+        movies.push({ title, thumb, url });
+
+        // Inputlarni tozalash
+        document.getElementById('mTitle').value = '';
+        document.getElementById('mThumb').value = '';
+        document.getElementById('mURL').value = '';
+
+        // Ekranni qayta chizish
+        renderMovies();
+        
+        alert("Kino muvaffaqiyatli qo'shildi!");
+        showSection('home'); // Qo'shgandan keyin asosiyga qaytish
+    } else {
+        alert("Iltimos, barcha maydonlarni to'ldiring!");
+    }
+}
+
+// 5. Video pleerni ochish
+function playMovie(url) {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('mainVideo');
+    video.src = url;
+    modal.style.display = 'flex';
+    video.play();
+}
+
+// 6. Pleerni yopish
+function closePlayer() {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('mainVideo');
+    video.pause();
+    video.src = "";
+    modal.style.display = 'none';
+}
+
+// 7. Bo'limlarni almashtirish funksiyasi
+function showSection(sectionId, event) {
+    if(event) event.preventDefault();
+
+    // Hamma sectionlarni yashirish
+    const sections = ['homeSection', 'moviesSection', 'studioSection', 'profileSection'];
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.add('hidden');
+    });
+
+    // Tanlangan sectionni ko'rsatish
+    const target = document.getElementById(sectionId + 'Section');
+    if(target) target.classList.remove('hidden');
+
+    // Nav-linklarni aktiv qilish
+    const links = document.querySelectorAll('.nav-links a, .mobile-nav i');
+    links.forEach(link => link.classList.remove('active'));
+    
+    // Aktiv klassni qo'shish (ixtiyoriy, element topilsa)
+}

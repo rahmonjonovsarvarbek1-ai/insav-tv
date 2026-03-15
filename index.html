@@ -20,13 +20,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
-
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/716/716429.png">
-    
-    </head>
+
+    <style>
+        .hidden { display: none !important; }
+        .btn-google {
+            background: white; color: #333; width: 100%; padding: 12px; 
+            border-radius: 8px; border: none; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            gap: 10px; font-weight: bold; font-family: inherit; margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-google:hover { background: #f1f1f1; transform: translateY(-2px); }
+        .section-fade { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
 <body>
 
-<section id="loginPage">
+<section id="loginPage" class="section-fade">
     <div class="glass-card">
         <div class="logo-main">Insav<span>TV</span></div>
         <div class="input-group">
@@ -35,16 +47,24 @@
         </div>
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Maxfiy kod">
+            <input type="password" placeholder="Maxfiy kod" id="passwordField">
         </div>
-        <button class="btn-prime" onclick="initApp()">Kirish</button>
-        <p style="margin-top:20px; font-size:0.8rem; color:var(--text-dim)">
+        <button class="btn-prime" onclick="alert('Email login hali ulanmagan. Iltimos Google orqali kiring.')">Kirish</button>
+        
+        <div style="margin: 15px 0; color: rgba(255,255,255,0.5); font-size: 0.8rem; text-align:center;">YOKI</div>
+
+        <button class="btn-google" id="googleBtn">
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="20" alt="G">
+            Google orqali kirish
+        </button>
+
+        <p style="margin-top:20px; font-size:0.8rem; color:var(--text-dim); text-align:center;">
             A'zo emasmisiz? <span style="color:var(--primary); cursor:pointer">Ro'yxatdan o'tish</span>
         </p>
     </div>
 </section>
 
-<div id="mainApp" class="hidden">
+<div id="mainApp" class="hidden section-fade">
     <header id="navbar">
         <div class="logo-main" style="font-size: 1.5rem; margin-bottom: 0;">Insav<span>TV</span></div>
         <ul class="nav-links">
@@ -55,7 +75,9 @@
         </ul>
         <div class="nav-right">
             <i class="fas fa-search" style="cursor:pointer; margin-right: 20px;"></i>
-            <button onclick="logout()" style="background:none; border:none; color:#fff; cursor:pointer"><i class="fas fa-sign-out-alt"></i></button>
+            <button onclick="logoutUser()" style="background:none; border:none; color:#fff; cursor:pointer">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </header>
 
@@ -82,146 +104,53 @@
         </section>
     </main>
 
+    <section id="moviesSection" class="content-section hidden" style="margin-top: 100px;">
+        <h2 class="section-title">Barcha Kinolar</h2>
+        <div class="movie-grid" id="allMoviesGrid"></div>
+    </section>
+
     <section id="studioSection" class="content-section hidden" style="margin-top: 100px;">
         <h2 class="section-title">Ijodkorlar Studiyasi</h2>
         <div class="glass-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
             <h3>Yangi video yuklash</h3>
-            <div class="input-group">
-                <input type="text" id="mTitle" placeholder="Film nomi">
-            </div>
-            <div class="input-group">
-                <input type="text" id="mThumb" placeholder="Poster URL (Rasm)">
-            </div>
-            <div class="input-group">
-                <input type="text" id="mURL" placeholder="Video URL (Direct link)">
-            </div>
+            <div class="input-group"><input type="text" id="mTitle" placeholder="Film nomi"></div>
+            <div class="input-group"><input type="text" id="mThumb" placeholder="Poster URL"></div>
+            <div class="input-group"><input type="text" id="mURL" placeholder="Video URL"></div>
             <button class="btn-prime" onclick="addNewMovie()">Platformaga qo'shish</button>
         </div>
     </section>
 
-   <section id="profileSection" class="content-section">
-    <div class="profile-container">
-        <div class="profile-header-card glass-card">
-            <div class="profile-avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
-                <img src="https://i.pravatar.cc/150?img=32" alt="User Avatar" class="profile-avatar" id="userAvatar">
-                <div class="avatar-overlay">
-                    <i class="fas fa-camera"></i>
+    <section id="profileSection" class="content-section hidden" style="margin-top: 100px;">
+        <div class="profile-container">
+            <div class="profile-header-card glass-card">
+                <div class="profile-avatar-wrapper">
+                    <img src="https://i.pravatar.cc/150" alt="Avatar" class="profile-avatar" id="userAvatar">
+                    <div class="badge-premium"><i class="fas fa-crown"></i></div>
                 </div>
-                <input type="file" id="avatarInput" hidden accept="image/*" onchange="previewImage(event)">
-                <div class="badge-premium"><i class="fas fa-crown"></i></div>
+                <div class="profile-info-main">
+                    <h2 id="userNameDisplay">Foydalanuvchi <i class="fas fa-check-circle verify-icon"></i></h2>
+                    <p id="userEmailDisplay">foydalanuvchi@mail.com</p>
+                    <div class="profile-tags">
+                        <span class="tag">Kinochi</span>
+                        <span class="tag">VIP Plan</span>
+                    </div>
+                </div>
+                <button class="btn-edit-profile"><i class="fas fa-edit"></i> Tahrirlash</button>
             </div>
             
-            <div class="profile-info-main">
-                <h2 id="userNameDisplay">Premium Foydalanuvchi <i class="fas fa-check-circle verify-icon"></i></h2>
-                <p id="userEmailDisplay">insav_studio@tv.com</p>
-                <div class="profile-tags">
-                    <span class="tag">Kinochi</span>
-                    <span class="tag">VIP Plan</span>
-                </div>
-            </div>
-            <button class="btn-edit-profile" onclick="openEditModal()"><i class="fas fa-edit"></i> Tahrirlash</button>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-item glass-card">
-                <i class="fas fa-eye"></i>
-                <div class="stat-text">
-                    <h3>1,240</h3>
-                    <span>Ko'rilgan</span>
-                </div>
-            </div>
-            <div class="stat-item glass-card">
-                <i class="fas fa-heart"></i>
-                <div class="stat-text">
-                    <h3>48</h3>
-                    <span>Sevimlilar</span>
-                </div>
-            </div>
-            <div class="stat-item glass-card">
-                <i class="fas fa-history"></i>
-                <div class="stat-text">
-                    <h3>156s</h3>
-                    <span>Ko'rish vaqti</span>
-                </div>
+            <div class="stats-grid" style="margin-top:20px;">
+                <div class="stat-item glass-card"><i class="fas fa-eye"></i> <h3>1,240</h3> <span>Ko'rilgan</span></div>
+                <div class="stat-item glass-card"><i class="fas fa-heart"></i> <h3>48</h3> <span>Sevimlilar</span></div>
+                <div class="stat-item glass-card"><i class="fas fa-history"></i> <h3>156s</h3> <span>Vaqt</span></div>
             </div>
         </div>
-
-        <div class="profile-settings-grid">
-            <div class="settings-card glass-card">
-                <h3><i class="fas fa-cog"></i> Sozlamalar</h3>
-                <ul class="settings-list">
-                    <li>
-                        <span>Xabarnomalar</span>
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span class="slider round"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <span>Tungi rejim</span>
-                        <label class="switch">
-                            <input type="checkbox" id="darkModeToggle" checked>
-                            <span class="slider round"></span>
-                        </label>
-                    </li>
-                    <li class="clickable"><span><i class="fas fa-shield-alt"></i> Xavfsizlik</span> <i class="fas fa-chevron-right"></i></li>
-                    <li class="clickable"><span><i class="fas fa-credit-card"></i> To'lov usullari</span> <i class="fas fa-chevron-right"></i></li>
-                    <li class="clickable logout-text"><span><i class="fas fa-sign-out-alt"></i> Chiqish</span></li>
-                </ul>
-            </div>
-
-            <div class="subscription-card glass-card">
-                <h3><i class="fas fa-gem"></i> Obuna holati</h3>
-                <div class="sub-details">
-                    <div class="sub-info">
-                        <strong>Premium Ultra</strong>
-                        <p>Keyingi to'lov: 12-Mart, 2026</p>
-                    </div>
-                    <button class="btn-manage">Yangilash</button>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" style="width: 75%;"></div>
-                </div>
-                <div class="sub-footer">
-                    <small>30 kundan 22 kun qoldi</small>
-                    <a href="#">Bekor qilish</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-   <div id="editModal" class="modal-overlay hidden">
-    <div class="modal-content glass-card">
-        <h3><i class="fas fa-user-edit"></i> Profilni tahrirlash</h3>
-        
-        <div class="input-group">
-            <label>Ism sharif</label>
-            <input type="text" id="editName" value="Sarvarbek">
-        </div>
-
-        <div class="input-group">
-            <label><i class="fas fa-at"></i> Taxallus (@username)</label>
-            <input type="text" id="editUsername" value="sarvarbek">
-        </div>
-
-        <div class="input-group">
-            <label><i class="fas fa-quote-left"></i> Men haqimda (Bio)</label>
-            <textarea id="editBio" rows="2" placeholder="O'zingiz haqingizda qisqacha..."></textarea>
-        </div>
-
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeEditModal()">Bekor qilish</button>
-            <button class="btn-save" onclick="saveProfile()">Saqlash</button>
-        </div>
-    </div>
-</div>
-</section>
+    </section>
 </div>
 
 <div class="modal" id="videoModal">
     <div class="modal-content">
         <span class="close-modal" onclick="closePlayer()">&times;</span>
-        <video id="mainVideo" controls></video>
+        <video id="mainVideo" controls style="width: 100%; border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5);"></video>
     </div>
 </div>
 
@@ -231,6 +160,66 @@
     <i class="fas fa-plus-circle" onclick="showSection('studio', event)"></i>
     <i class="fas fa-user" onclick="showSection('profile', event)"></i>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // Firebase konfiguratsiyasi
+    const firebaseConfig = {
+        apiKey: "AIzaSyAUkZNPWPgTkwkqfbaAO05HTdA-CZHN3a4",
+        authDomain: "insavtv.firebaseapp.com",
+        projectId: "insavtv",
+        storageBucket: "insavtv.firebasestorage.app",
+        messagingSenderId: "56468216651",
+        appId: "1:56468216651:web:6e8e59be7e556d3021a6ce"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Google bilan kirish
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Login xatosi:", error);
+            alert("Google orqali kirishda xatolik yuz berdi.");
+        }
+    });
+
+    // Logout
+    window.logoutUser = () => {
+        signOut(auth).then(() => {
+            location.reload();
+        });
+    };
+
+    // Holatni kuzatish (Google login bo'lganda asosiyga o'tish)
+    onAuthStateChanged(auth, (user) => {
+        const loginPage = document.getElementById('loginPage');
+        const mainApp = document.getElementById('mainApp');
+        
+        if (user) {
+            loginPage.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            
+            // Foydalanuvchi ma'lumotlarini o'rnatish
+            document.getElementById('userNameDisplay').innerText = user.displayName;
+            document.getElementById('userEmailDisplay').innerText = user.email;
+            if(user.photoURL) document.getElementById('userAvatar').src = user.photoURL;
+            
+            console.log("Xush kelibsiz,", user.displayName);
+        } else {
+            loginPage.classList.remove('hidden');
+            mainApp.classList.add('hidden');
+        }
+    });
+</script>
 
 <script src="script.js"></script>
 </body>
